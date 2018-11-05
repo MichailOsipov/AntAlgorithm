@@ -8,18 +8,22 @@ import {
 import {
     getInputAntsCount,
     getInputIterationsCount,
-    getInputPheromoneInitCount
+    getInputPheromoneInitCount,
+    getPheromoneGrowthCount
 } from './input-data-form';
 import {
     createSalesmanEdges,
     getAntsPathsSalesman
 } from './salesman';
 
+// optimise edges array -> object
+// optimise pheromone array -> object
 export const startSalesmanProblemSolving = () => (dispatch, getState) => {
     const nodes = getNodes(getState());
     const antsCount = getInputAntsCount(getState());
     const iterationsCount = getInputIterationsCount(getState());
     const pheromoneInitCount = getInputPheromoneInitCount(getState());
+    const pheromoneGrowthCount = getPheromoneGrowthCount(getState());
 
     const edges = createSalesmanEdges(nodes);
     dispatch(setEdges(edges));
@@ -38,8 +42,9 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
             nodes,
             antsPheromone
         });
-        dispatch(updatePheromone(antsPaths));
+        console.log(antsPaths);
+        dispatch(updatePheromone(pheromoneGrowthCount, antsPaths, nodes));
         dispatch(decreasePheromone());
         currentIteration += 1;
-    }, 1000);
+    }, 10);
 };
