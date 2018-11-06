@@ -5,8 +5,8 @@ import {INPUT_DATA_FORM_NAME} from './constants';
 export const InputDateForm = reduxForm({
     form: INPUT_DATA_FORM_NAME,
     initialValues: {
-        antsCount: 20,
-        iterationsCount: 20,
+        antsCount: 100,
+        iterationsCount: 100,
         pheromoneInitCount: 0.01,
         pheromoneGrowthCount: 10
     }

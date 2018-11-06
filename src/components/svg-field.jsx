@@ -1,18 +1,19 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Circle} from 'components/circle';
-import {Line} from 'components/line';
+import {Circle, Line, Ant} from 'components/primitives';
 import {
     setNodes,
     getNodes,
     getEdges
 } from 'domains/graph';
+import {getAnts} from 'domains/ants';
 
 export const SvgField = connect(
     state => ({
         nodes: getNodes(state),
-        edges: getEdges(state)
+        edges: getEdges(state),
+        ants: getAnts(state)
     }),
     dispatch => ({
         setNodes: nodes => dispatch(setNodes(nodes))
@@ -35,6 +36,11 @@ export const SvgField = connect(
                     x: PropTypes.number,
                     y: PropTypes.number
                 })
+            })),
+            ants: PropTypes.arrayOf(PropTypes.shape({
+                x: PropTypes.number,
+                y: PropTypes.number,
+                direction: PropTypes.string
             }))
         };
 
@@ -58,12 +64,18 @@ export const SvgField = connect(
                             key={JSON.stringify({from, to})}
                         />
                     ))}
-                    {this.props.nodes.map(({x, y}, i) => (
+                    {this.props.nodes.map(({x, y, name}, i) => (
                         <Circle
                             x={x}
                             y={y}
                             label={String(i)}
-                            key={`${x}-${y}`}
+                            key={`${x}-${y}-${name}`}
+                        />
+                    ))}
+                    {this.props.ants.map(({x, y}) => (
+                        <Ant
+                            x={x}
+                            y={y}
                         />
                     ))}
                 </svg>

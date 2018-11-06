@@ -1,8 +1,8 @@
-import {setEdges, getNodes} from 'domains/graph';
+import {times} from 'lodash';
+import {setNodes, setEdges, getNodes} from 'domains/graph';
 import {
     initializePheromone,
     updatePheromone,
-    decreasePheromone,
     getAntsPheromone
 } from 'domains/ants-pheromone';
 import {
@@ -28,23 +28,24 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
     const edges = createSalesmanEdges(nodes);
     dispatch(setEdges(edges));
     dispatch(initializePheromone(pheromoneInitCount, edges));
-    let currentIteration = 0;
-    const intervalId = setInterval(() => {
-        if (currentIteration >= iterationsCount) {
-            clearInterval(intervalId);
-            return;
-        }
-
-        const antsPheromone = getAntsPheromone(getState());
-        const antsPaths = getAntsPathsSalesman({
-            antsCount,
-            edges,
-            nodes,
-            antsPheromone
+    // add setTimeout
+    setTimeout(() => {
+        const algorithmIterationsPaths = times(iterationsCount, () => {
+            const antsPheromone = getAntsPheromone(getState());
+            const antsPaths = getAntsPathsSalesman({
+                antsCount,
+                edges,
+                nodes,
+                antsPheromone
+            });
+            dispatch(updatePheromone(pheromoneGrowthCount, antsPaths, nodes));
+            return antsPaths;
         });
-        console.log(antsPaths);
-        dispatch(updatePheromone(pheromoneGrowthCount, antsPaths, nodes));
-        dispatch(decreasePheromone());
-        currentIteration += 1;
-    }, 10);
+        console.log(algorithmIterationsPaths);
+    }, 0);
+};
+
+export const clearNodesAndEdges = () => (dispatch) => {
+    dispatch(setNodes([]));
+    dispatch(setEdges([]));
 };

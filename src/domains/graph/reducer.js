@@ -1,7 +1,8 @@
 import {SET_NODES, SET_EDGES} from './actions';
+import {INITIAL_NODES} from './initial-nodes';
 
 const DEFAULT_STATE = {
-    nodes: [],
+    nodes: INITIAL_NODES,
     edges: []
 };
 

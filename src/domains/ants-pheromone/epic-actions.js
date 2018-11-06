@@ -47,7 +47,3 @@ export const updatePheromone = (pheromoneGrowthCount, antsPaths, nodes) => (disp
     });
     dispatch(setAntsPheromone(newAntsPheromone));
 };
-
-export const decreasePheromone = () => (dispatch, getState) => {
-
-};
