@@ -1,16 +1,3 @@
-import {setAntsPheromone} from './actions';
-import {getAntsPheromone} from './selectors';
-
-export const initializePheromone = (pheromoneInitCount, edges) => (dispatch) => {
-    dispatch(setAntsPheromone(
-        edges.map(({from, to}) => ({
-            from: from.name,
-            to: to.name,
-            pheromone: pheromoneInitCount
-        }))
-    ));
-};
-
 const pathContainsEdge = (node1, node2, path) => {
     const edgeInPathMiddle = path.some((curr, i) => {
         const prev = path[i - 1];
@@ -33,9 +20,8 @@ const calcNodesDistance = (from, to, nodes) => {
     return (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
 };
 
-export const updatePheromone = (pheromoneGrowthCount, antsPaths, nodes) => (dispatch, getState) => {
-    const antsPheromone = getAntsPheromone(getState());
-    const newAntsPheromone = antsPheromone.map(({from, to, pheromone}) => {
+export const updatePheromone = (antsPheromone, pheromoneGrowthCount, antsPaths, nodes) =>
+    antsPheromone.map(({from, to, pheromone}) => {
         const edgeVisitorsCount = calcEdgeVisitorsCount(from, to, antsPaths);
         // curr path length instead of distance
         const pheromonePerVisit = pheromoneGrowthCount / calcNodesDistance(from, to, nodes);
@@ -45,5 +31,3 @@ export const updatePheromone = (pheromoneGrowthCount, antsPaths, nodes) => (disp
             pheromone: pheromone + (edgeVisitorsCount * pheromonePerVisit)
         };
     });
-    dispatch(setAntsPheromone(newAntsPheromone));
-};
