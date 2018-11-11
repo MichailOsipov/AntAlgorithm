@@ -9,7 +9,8 @@ import {
 } from './input-data-form';
 import {
     createSalesmanEdges,
-    getAntsPathsSalesman
+    getAntsPathsSalesman,
+    salesmanAntsPathGenerator
 } from './salesman';
 import {
     initializePheromone,
@@ -28,36 +29,29 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
 
     const edges = createSalesmanEdges(nodes);
     dispatch(setEdges(edges));
-    let antsPheromone = initializePheromone(pheromoneInitCount, edges);
+    // let antsPheromone = initializePheromone(pheromoneInitCount, edges);
     // add setTimeout
-    setTimeout(() => {
-        const algorithmIterationsPaths = times(iterationsCount, () => {
-            const antsPaths = getAntsPathsSalesman({
-                antsCount,
-                edges,
-                nodes,
-                antsPheromone
-            });
-            antsPheromone = updatePheromone(antsPheromone, pheromoneGrowthCount, antsPaths, nodes);
-            return antsPaths;
-        });
-        console.log(algorithmIterationsPaths);
-        const currAntsPaths = algorithmIterationsPaths[algorithmIterationsPaths.length - 1];
-        let ants = initializeAnts(nodes, currAntsPaths);
-        dispatch(setAnts(ants));
-        let antsIterationsCount = 0;
-        const antIntervalId = setInterval(() => {
-            ants = moveAnts(nodes, ants, currAntsPaths);
-            dispatch(setAnts(ants));
-            antsIterationsCount += 1;
-            if (antsIterationsCount > 50) {
-                clearInterval(antIntervalId);
-            }
-        }, 100);
-    }, 0);
+
+    const algorithmIterationsPaths = [];
+    const antsPathsGenerator = salesmanAntsPathGenerator({
+        pheromoneInitCount,
+        pheromoneGrowthCount,
+        antsCount,
+        nodes,
+        edges
+    });
+    for (let i = 0; i < iterationsCount; i += 1) {
+        algorithmIterationsPaths.push(antsPathsGenerator.next().value);
+    }
+    console.log(algorithmIterationsPaths);
+
+    // let ants = initializeAnts(nodes, algorithmIterationsPaths[algorithmIterationsPaths.length - 1]);
+    // dispatch(setAnts(ants));
+    // ants = moveAnts(nodes, ants, algorithmIterationsPaths[algorithmIterationsPaths.length - 1]);
+    // dispatch(setAnts(ants));
 };
 
 export const clearNodesAndEdges = () => (dispatch) => {
-    dispatch(setNodes([]));
+    dispatch(setNodes({}));
     dispatch(setEdges([]));
 };

@@ -1,3 +1,5 @@
+import {findEdgeByNodeNames} from 'utils/find-edge-by-node-names';
+
 const pathContainsEdge = (node1, node2, path) => {
     const edgeInPathMiddle = path.some((curr, i) => {
         const prev = path[i - 1];
@@ -14,17 +16,11 @@ const calcEdgeVisitorsCount = (from, to, antsPaths) =>
         pathContainsEdge(from, to, antPath) ? summ + 1 : summ
     ), 0);
 
-const calcNodesDistance = (from, to, nodes) => {
-    const {x: x1, y: y1} = nodes.find(({name}) => name === from) || {};
-    const {x: x2, y: y2} = nodes.find(({name}) => name === to) || {};
-    return (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
-};
-
-export const updatePheromone = (antsPheromone, pheromoneGrowthCount, antsPaths, nodes) =>
+export const updatePheromone = (antsPheromone, pheromoneGrowthCount, antsPaths, nodes, edges) =>
     antsPheromone.map(({from, to, pheromone}) => {
         const edgeVisitorsCount = calcEdgeVisitorsCount(from, to, antsPaths);
-        // curr path length instead of distance
-        const pheromonePerVisit = pheromoneGrowthCount / calcNodesDistance(from, to, nodes);
+        const {distance} = findEdgeByNodeNames(edges, from, to);
+        const pheromonePerVisit = pheromoneGrowthCount / distance;
         return {
             from,
             to,

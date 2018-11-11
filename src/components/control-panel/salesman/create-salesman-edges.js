@@ -1,12 +1,16 @@
+import {calculateNodesDistance} from 'utils/calculate-nodes-distance';
+
 export const createSalesmanEdges = (nodes) => {
     const edges = [];
-    for (let i = 0; i < nodes.length; i += 1) {
-        for (let j = i + 1; j < nodes.length; j += 1) {
-            const fromNode = nodes[i];
-            const toNode = nodes[j];
+    const nodeNames = Object.keys(nodes);
+    for (let i = 0; i < nodeNames.length; i += 1) {
+        for (let j = i + 1; j < nodeNames.length; j += 1) {
+            const fromNodeName = nodeNames[i];
+            const toNodeName = nodeNames[j];
             edges.push({
-                from: {...fromNode},
-                to: {...toNode}
+                from: fromNodeName,
+                to: toNodeName,
+                distance: calculateNodesDistance(nodes[fromNodeName], nodes[toNodeName])
             });
         }
     }

@@ -12,7 +12,7 @@ export const graphReducer = (state = DEFAULT_STATE, action) => {
             const nodes = action.payload;
             return {
                 ...state,
-                nodes: [...nodes]
+                nodes
             };
         }
         case SET_EDGES: {

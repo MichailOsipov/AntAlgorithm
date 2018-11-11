@@ -1,28 +1,15 @@
 import {times} from 'lodash';
-
-const calcDistance = (node1, node2) => {
-    const {x: x1, y: y1} = node1;
-    const {x: x2, y: y2} = node2;
-    return (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
-};
-
-const getPheromone = (antsPheromone, node1, node2) => {
-    const {name: node1Name} = node1;
-    const {name: node2Name} = node2;
-    return (antsPheromone.find(({from, to}) => (
-        (node1Name === from && node2Name === to) ||
-        (node1Name === to && node2Name === from)
-    )) || {}).pheromone;
-};
+import {findEdgeByNodeNames} from 'utils/find-edge-by-node-names';
 
 const getNodesPossibilities = ({
-    currentNode,
-    nodesToVisit,
+    currentNodeName,
+    nodesNamesToVisit,
+    edges,
     antsPheromone
 }) => {
-    const nodesValues = nodesToVisit.map((node) => {
-        const distance = calcDistance(currentNode, node);
-        const pheromone = getPheromone(antsPheromone, currentNode, node);
+    const nodesValues = nodesNamesToVisit.map((nodeName) => {
+        const {distance} = findEdgeByNodeNames(edges, currentNodeName, nodeName) || {};
+        const {pheromone} = findEdgeByNodeNames(antsPheromone, currentNodeName, nodeName) || {};
         return pheromone / distance;
     });
     const summValues = nodesValues.reduce((summ, curr) => summ + curr, 0);
@@ -41,25 +28,26 @@ const selectNodeByPossibility = (possibilities) => {
     return possibilitiesSumm.findIndex(value => randomValue < value);
 };
 
-const getNextNode = ({path, edges, nodes, antsPheromone}) => {
-    const nodesToVisit = nodes.filter(node => !path.includes(node));
+const getNextNode = ({path, edges, nodesNames, antsPheromone}) => {
+    const nodesNamesToVisit = nodesNames.filter(nodeName => !path.includes(nodeName));
     const nodesPossibilities = getNodesPossibilities({
-        currentNode: path[path.length - 1],
-        nodesToVisit,
+        currentNodeName: path[path.length - 1],
+        nodesNamesToVisit,
         edges,
         antsPheromone
     });
     const selectedNodeIndex = selectNodeByPossibility(nodesPossibilities);
-    return nodesToVisit[selectedNodeIndex];
+    return nodesNamesToVisit[selectedNodeIndex];
 };
 
 const getAntPath = ({edges, nodes, antsPheromone}) => {
+    const nodesNames = Object.keys(nodes);
     const path = [];
-    path.push(nodes[0]);
-    while (path.length !== nodes.length) {
-        path.push(getNextNode({path, edges, nodes, antsPheromone}));
+    path.push(nodesNames[0]);
+    while (path.length !== nodesNames.length) {
+        path.push(getNextNode({path, edges, nodesNames, antsPheromone}));
     }
-    return path.map(({name}) => name);
+    return path;
 };
 
 export const getAntsPathsSalesman = ({

@@ -22,20 +22,11 @@ export const SvgField = connect(
     class extends React.Component {
         static propTypes = {
             setNodes: PropTypes.func,
-            nodes: PropTypes.arrayOf(PropTypes.shape({
-                x: PropTypes.number,
-                y: PropTypes.number,
-                name: PropTypes.string
-            })),
+            nodes: PropTypes.object,
             edges: PropTypes.arrayOf(PropTypes.shape({
-                from: PropTypes.shape({
-                    x: PropTypes.number,
-                    y: PropTypes.number
-                }),
-                to: PropTypes.shape({
-                    x: PropTypes.number,
-                    y: PropTypes.number
-                })
+                from: PropTypes.string,
+                to: PropTypes.string,
+                distance: PropTypes.number
             })),
             ants: PropTypes.arrayOf(PropTypes.shape({
                 x: PropTypes.number,
@@ -47,36 +38,40 @@ export const SvgField = connect(
         addNode = (e) => {
             const {nativeEvent: {offsetX: x, offsetY: y}} = e;
             const {nodes} = this.props;
-            this.props.setNodes([...nodes, {x, y, name: String(nodes.length)}]);
+            this.props.setNodes({
+                ...nodes,
+                [String(Object.keys(nodes).length)]: {x, y}
+            });
         }
 
         render() {
+            const {nodes, edges} = this.props;
             return (
                 <svg
                     height="100%"
                     width="100%"
                     onClick={this.addNode}
                 >
-                    {this.props.edges.map(({from, to}) => (
+                    {edges.map(({from, to}) => (
                         <Line
-                            from={from}
-                            to={to}
-                            key={JSON.stringify({from, to})}
+                            from={nodes[from]}
+                            to={nodes[to]}
+                            key={`${from}-${to}`}
                         />
                     ))}
-                    {this.props.nodes.map(({x, y, name}, i) => (
-                        <Circle
-                            x={x}
-                            y={y}
-                            label={String(i)}
-                            key={`${x}-${y}-${name}`}
-                        />
-                    ))}
+                    {Object.keys(nodes).map((nodeName) => {
+                        const {x, y} = nodes[nodeName];
+                        return (
+                            <Circle
+                                x={x}
+                                y={y}
+                                label={nodeName}
+                                key={`${x}-${y}-${nodeName}`}
+                            />
+                        );
+                    })}
                     {this.props.ants.map(({x, y}) => (
-                        <Ant
-                            x={x}
-                            y={y}
-                        />
+                        <Ant x={x} y={y} />
                     ))}
                 </svg>
             );

@@ -1,6 +1,6 @@
 export const initializePheromone = (pheromoneInitCount, edges) =>
     edges.map(({from, to}) => ({
-        from: from.name,
-        to: to.name,
+        from,
+        to,
         pheromone: pheromoneInitCount
     }));
