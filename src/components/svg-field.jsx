@@ -22,16 +22,22 @@ export const SvgField = connect(
     class extends React.Component {
         static propTypes = {
             setNodes: PropTypes.func,
-            nodes: PropTypes.object,
+            nodes: PropTypes.object, // [nodeName]: {x, y}
             edges: PropTypes.arrayOf(PropTypes.shape({
                 from: PropTypes.string,
                 to: PropTypes.string,
                 distance: PropTypes.number
             })),
             ants: PropTypes.arrayOf(PropTypes.shape({
-                x: PropTypes.number,
-                y: PropTypes.number,
-                direction: PropTypes.string
+                currNodeName: PropTypes.string,
+                nextNodeName: PropTypes.string,
+                distanceInEdgePassed: PropTypes.number,
+                coordinates: PropTypes.shape({
+                    x: PropTypes.number,
+                    y: PropTypes.number
+                }),
+                antPath: PropTypes.arrayOf(PropTypes.string),
+                complete: PropTypes.bool
             }))
         };
 
@@ -70,8 +76,8 @@ export const SvgField = connect(
                             />
                         );
                     })}
-                    {this.props.ants.map(({x, y}) => (
-                        <Ant x={x} y={y} />
+                    {this.props.ants.map(({coordinates}) => (
+                        <Ant x={coordinates.x} y={coordinates.y} />
                     ))}
                 </svg>
             );

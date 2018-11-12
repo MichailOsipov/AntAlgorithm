@@ -1,6 +1,4 @@
-import {times} from 'lodash';
 import {setNodes, setEdges, getNodes} from 'domains/graph';
-import {setAnts} from 'domains/ants';
 import {
     getInputAntsCount,
     getInputIterationsCount,
@@ -9,17 +7,10 @@ import {
 } from './input-data-form';
 import {
     createSalesmanEdges,
-    getAntsPathsSalesman,
     salesmanAntsPathGenerator
 } from './salesman';
-import {
-    initializePheromone,
-    updatePheromone
-} from './pheromone';
-import {initializeAnts, moveAnts} from './ants-movement';
+import {animateAntsMoving} from './animate-ants-moving';
 
-// optimise edges array -> object
-// optimise pheromone array -> object
 export const startSalesmanProblemSolving = () => (dispatch, getState) => {
     const nodes = getNodes(getState());
     const antsCount = getInputAntsCount(getState());
@@ -29,10 +20,7 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
 
     const edges = createSalesmanEdges(nodes);
     dispatch(setEdges(edges));
-    // let antsPheromone = initializePheromone(pheromoneInitCount, edges);
-    // add setTimeout
 
-    const algorithmIterationsPaths = [];
     const antsPathsGenerator = salesmanAntsPathGenerator({
         pheromoneInitCount,
         pheromoneGrowthCount,
@@ -40,15 +28,38 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
         nodes,
         edges
     });
-    for (let i = 0; i < iterationsCount; i += 1) {
-        algorithmIterationsPaths.push(antsPathsGenerator.next().value);
-    }
-    console.log(algorithmIterationsPaths);
 
-    // let ants = initializeAnts(nodes, algorithmIterationsPaths[algorithmIterationsPaths.length - 1]);
-    // dispatch(setAnts(ants));
-    // ants = moveAnts(nodes, ants, algorithmIterationsPaths[algorithmIterationsPaths.length - 1]);
-    // dispatch(setAnts(ants));
+    let iterationNumber = 1;
+    const animateAntsPath = () => requestAnimationFrame(() => {
+        if (iterationNumber > iterationsCount) {
+            return;
+        }
+        iterationNumber += 1;
+        dispatch(animateAntsMoving({
+            antsPaths: antsPathsGenerator.next().value,
+            nodes,
+            edges
+        })).then(animateAntsPath);
+    });
+    animateAntsPath();
+
+    // const animateAntsPath = () => requestAnimationFrame(() => {
+    //     if (iterationNumber > iterationsCount) {
+    //         return;
+    //     }
+    //     iterationNumber += 1;
+    //     if (iterationNumber === 100) {
+    //         dispatch(animateAntsMoving({
+    //             antsPaths: antsPathsGenerator.next().value,
+    //             nodes,
+    //             edges
+    //         })).then(animateAntsPath);
+    //     } else {
+    //         antsPathsGenerator.next();
+    //         animateAntsPath();
+    //     }
+    // });
+    // animateAntsPath();
 };
 
 export const clearNodesAndEdges = () => (dispatch) => {
