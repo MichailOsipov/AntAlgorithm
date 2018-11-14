@@ -3,7 +3,7 @@ import {
     getInputAntsCount,
     getInputIterationsCount,
     getInputPheromoneInitCount,
-    getPheromoneGrowthCount
+    getInputPheromoneGrowthCount
 } from './input-data-form';
 import {
     createSalesmanEdges,
@@ -16,7 +16,7 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
     const antsCount = getInputAntsCount(getState());
     const iterationsCount = getInputIterationsCount(getState());
     const pheromoneInitCount = getInputPheromoneInitCount(getState());
-    const pheromoneGrowthCount = getPheromoneGrowthCount(getState());
+    const pheromoneGrowthCount = getInputPheromoneGrowthCount(getState());
 
     const edges = createSalesmanEdges(nodes);
     dispatch(setEdges(edges));
@@ -42,24 +42,6 @@ export const startSalesmanProblemSolving = () => (dispatch, getState) => {
         })).then(animateAntsPath);
     });
     animateAntsPath();
-
-    // const animateAntsPath = () => requestAnimationFrame(() => {
-    //     if (iterationNumber > iterationsCount) {
-    //         return;
-    //     }
-    //     iterationNumber += 1;
-    //     if (iterationNumber === 100) {
-    //         dispatch(animateAntsMoving({
-    //             antsPaths: antsPathsGenerator.next().value,
-    //             nodes,
-    //             edges
-    //         })).then(animateAntsPath);
-    //     } else {
-    //         antsPathsGenerator.next();
-    //         animateAntsPath();
-    //     }
-    // });
-    // animateAntsPath();
 };
 
 export const clearNodesAndEdges = () => (dispatch) => {

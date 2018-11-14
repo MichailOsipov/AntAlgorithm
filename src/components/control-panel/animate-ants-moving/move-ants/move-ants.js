@@ -1,8 +1,6 @@
 import {findEdgeByNodeNames} from 'utils/find-edge-by-node-names';
 import {moveAnt} from './move-ant';
 
-const SPEED_PER_SECOND = 100;
-
 const getNextNodeName = (currNodeName, antPath) => {
     const currNodeIndex = antPath.findIndex(nodeName => nodeName === currNodeName);
     return antPath[currNodeIndex + 1];
@@ -10,7 +8,7 @@ const getNextNodeName = (currNodeName, antPath) => {
 
 // make it save and more smart
 // if path is cycle it won't stop
-export const moveAnts = ({ants, timePassed, nodes, edges}) => {
+export const moveAnts = ({ants, timePassed, nodes, edges, antsSpeed}) => {
     const secondsPassed = timePassed / 1000;
     return ants.map(({
         currNodeName,
@@ -30,7 +28,7 @@ export const moveAnts = ({ants, timePassed, nodes, edges}) => {
                 complete
             };
         }
-        const distanceToMove = SPEED_PER_SECOND * secondsPassed;
+        const distanceToMove = antsSpeed * secondsPassed;
         const {distance} = findEdgeByNodeNames(edges, currNodeName, nextNodeName);
         if (distance > distanceToMove + distanceInEdgePassed) {
             const newDistanceToEdgePassed = distanceToMove + distanceInEdgePassed;

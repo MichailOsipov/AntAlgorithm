@@ -8,7 +8,8 @@ export const InputDateForm = reduxForm({
         antsCount: 100,
         iterationsCount: 100,
         pheromoneInitCount: 0.01,
-        pheromoneGrowthCount: 10
+        pheromoneGrowthCount: 10,
+        antsSpeed: 100
     }
 })(() => (
     <div>
@@ -27,6 +28,10 @@ export const InputDateForm = reduxForm({
         <div>
             <label>Прирост феромона</label><br />
             <Field name="pheromoneGrowthCount" component="input" type="number" />
+        </div>
+        <div>
+            <label>Скорость муравьев</label>
+            <Field name="antsSpeed" component="input" type="number" />
         </div>
     </div>
 ));

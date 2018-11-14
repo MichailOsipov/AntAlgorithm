@@ -3,5 +3,6 @@ export {
     getInputAntsCount,
     getInputIterationsCount,
     getInputPheromoneInitCount,
-    getPheromoneGrowthCount
+    getInputPheromoneGrowthCount,
+    getInputAntsSpeed
 } from './selectors';
