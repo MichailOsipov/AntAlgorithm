@@ -1,8 +1,61 @@
-export const moveAnt = (fromNode, toNode, distanceToMove, nodesDistance) => {
-    const {x: x0, y: y0} = fromNode;
-    const {x: x1, y: y1} = toNode;
+import {findEdgeByNodeNames} from 'utils/find-edge-by-node-names';
+import {shiftAnt} from './shift-ant';
+
+export const moveAnt = ({
+    distanceToMove,
+    nodes,
+    edges,
+    distanceInEdgePassed,
+    coordinates,
+    antPath,
+    fromNodeIndex,
+    complete
+}) => {
+    if (complete) {
+        return {
+            distanceInEdgePassed,
+            coordinates,
+            antPath,
+            fromNodeIndex,
+            complete
+        };
+    }
+    const {distance} = findEdgeByNodeNames(edges, antPath[fromNodeIndex], antPath[fromNodeIndex + 1]);
+    if (distance < distanceToMove + distanceInEdgePassed) {
+        const newFromNodeIndex = fromNodeIndex + 1;
+        const pathCompleted = newFromNodeIndex + 1 === antPath.length;
+        if (pathCompleted) {
+            return {
+                distanceInEdgePassed,
+                coordinates: nodes[antPath[newFromNodeIndex]],
+                antPath,
+                fromNodeIndex: newFromNodeIndex,
+                complete: true
+            };
+        }
+        return moveAnt({
+            distanceToMove,
+            nodes,
+            edges,
+            distanceInEdgePassed: (distanceToMove + distanceInEdgePassed) - distance,
+            coordinates,
+            antPath,
+            fromNodeIndex: newFromNodeIndex,
+            complete
+        });
+    }
+
+    const newDistanceToEdgePassed = distanceToMove + distanceInEdgePassed;
     return {
-        x: x0 + ((x1 - x0) * (distanceToMove / nodesDistance)),
-        y: y0 + ((y1 - y0) * (distanceToMove / nodesDistance))
+        distanceInEdgePassed: newDistanceToEdgePassed,
+        coordinates: shiftAnt(
+            nodes[antPath[fromNodeIndex]],
+            nodes[antPath[fromNodeIndex + 1]],
+            newDistanceToEdgePassed,
+            distance
+        ),
+        antPath,
+        fromNodeIndex,
+        complete
     };
 };

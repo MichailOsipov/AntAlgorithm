@@ -7,10 +7,9 @@ export const initializeAnts = ({antsPaths, nodes, edges}) =>
         const {distance} = findEdgeByNodeNames(edges, currNodeName, nextNodeName);
         const offset = Math.random() * (distance / 4);
         return ({
-            currNodeName,
-            nextNodeName,
             distanceInEdgePassed: offset,
             coordinates: nodes[currNodeName],
-            antPath
+            antPath,
+            fromNodeIndex: 0
         });
     });
