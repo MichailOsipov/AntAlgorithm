@@ -7,6 +7,7 @@ import {getAntsPathsSalesman} from './get-ants-paths-salesman';
 export function* salesmanAntsPathGenerator({
     pheromoneInitCount,
     pheromoneGrowthCount,
+    evaporationCount,
     antsCount,
     nodes,
     edges
@@ -20,6 +21,12 @@ export function* salesmanAntsPathGenerator({
             antsPheromone
         });
         yield antsPaths;
-        antsPheromone = updatePheromone(antsPheromone, pheromoneGrowthCount, antsPaths, nodes, edges);
+        antsPheromone = updatePheromone({
+            antsPheromone,
+            pheromoneGrowthCount,
+            evaporationCount,
+            antsPaths,
+            edges
+        });
     }
 }

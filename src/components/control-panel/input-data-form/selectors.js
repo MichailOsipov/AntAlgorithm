@@ -8,3 +8,4 @@ export const getInputIterationsCount = state => valueSelector(state, 'iterations
 export const getInputPheromoneInitCount = state => valueSelector(state, 'pheromoneInitCount');
 export const getInputPheromoneGrowthCount = state => valueSelector(state, 'pheromoneGrowthCount');
 export const getInputAntsSpeed = state => valueSelector(state, 'antsSpeed');
+export const getInputEvaporationCount = state => valueSelector(state, 'evaporationCount');

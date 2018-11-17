@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {reduxForm, Field} from 'redux-form';
+import {valueRangeNormalizer} from 'utils/value-range-normalizer';
 import {INPUT_DATA_FORM_NAME} from './constants';
 
 export const InputDateForm = reduxForm({
@@ -9,6 +10,7 @@ export const InputDateForm = reduxForm({
         iterationsCount: 100,
         pheromoneInitCount: 0.01,
         pheromoneGrowthCount: 10,
+        evaporationCount: 0.8,
         antsSpeed: 100
     }
 })(() => (
@@ -28,6 +30,15 @@ export const InputDateForm = reduxForm({
         <div>
             <label>Прирост феромона</label><br />
             <Field name="pheromoneGrowthCount" component="input" type="number" />
+        </div>
+        <div>
+            <label>Коэффициент испарения феромона</label><br />
+            <Field
+                name="evaporationCount"
+                component="input"
+                type="number"
+                normalize={valueRangeNormalizer(0, 1)}
+            />
         </div>
         <div>
             <label>Скорость муравьев</label>

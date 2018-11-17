@@ -47,7 +47,7 @@ const getAntPath = ({edges, nodes, antsPheromone}) => {
     while (path.length !== nodesNames.length) {
         path.push(getNextNode({path, edges, nodesNames, antsPheromone}));
     }
-    return path;
+    return [...path, nodesNames[0]];
 };
 
 export const getAntsPathsSalesman = ({

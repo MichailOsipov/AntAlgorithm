@@ -16,7 +16,13 @@ const calcEdgeVisitorsCount = (from, to, antsPaths) =>
         pathContainsEdge(from, to, antPath) ? summ + 1 : summ
     ), 0);
 
-export const updatePheromone = (antsPheromone, pheromoneGrowthCount, antsPaths, nodes, edges) =>
+export const updatePheromone = ({
+    antsPheromone,
+    pheromoneGrowthCount,
+    evaporationCount,
+    antsPaths,
+    edges
+}) =>
     antsPheromone.map(({from, to, pheromone}) => {
         const edgeVisitorsCount = calcEdgeVisitorsCount(from, to, antsPaths);
         const {distance} = findEdgeByNodeNames(edges, from, to);
@@ -24,6 +30,6 @@ export const updatePheromone = (antsPheromone, pheromoneGrowthCount, antsPaths, 
         return {
             from,
             to,
-            pheromone: pheromone + (edgeVisitorsCount * pheromonePerVisit)
+            pheromone: ((1 - evaporationCount) * pheromone) + (edgeVisitorsCount * pheromonePerVisit)
         };
     });
